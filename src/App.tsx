@@ -2,9 +2,17 @@
 
 function App() {
   return (
-    <main className="text-red-700">
-      test
-    </main>
+    <>
+      <header>
+        
+      </header>
+      <main className="text-red-700">
+        test
+      </main>
+      <footer>
+        
+      </footer>
+    </>
   )
 }
 
