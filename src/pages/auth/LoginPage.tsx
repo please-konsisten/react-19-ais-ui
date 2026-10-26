@@ -6,33 +6,36 @@ import {  LoginFormInputNIM,
           LoginFormInputPassword } from '@src/components/feature/LoginFormInput';
 import LoginLayout from '@src/components/layouts/LoginLayout';
 
-export default function LoginPage() {
-  const [nim, setNim] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+interface RequestLoginAPI{
+  username?: string
+  email?: string
+  password: string
+}
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('Logging in with:', { nim, password });
+export default function LoginPage() {
+  const [nim, setNim] = useState("");
+  const [password, setPassword] = useState("");
+
+  const loginAPIHandler = (req: RequestLoginAPI) => {
+    console.log(req)
   };
 
   return (
-    <LoginLayout>
-      {/* LoginPageHeader */}
-      <LoginPageHeader />
-
-
-      <LoginForm>
-        {/* Input NIM */}
-        <LoginFormInputNIM />
-
-        {/* Input Kata Sandi */}
-        <LoginFormInputPassword />
+    <LoginLayout> 
+      <LoginPageHeader /> 
+      {/* ======================== */}
+      <LoginForm requestHandler={loginAPIHandler}>
+        <LoginFormInputNIM 
+          value={nim} 
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNim(e.target.value)}
+          />
+        <LoginFormInputPassword 
+          value={password} 
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} 
+          />
       </LoginForm>
-
-      {/* Footer */}
+      {/* ======================== */}
       <LoginPageFooter />
-
     </LoginLayout>
   );
 }

@@ -1,12 +1,30 @@
 "use client"
-export default function LoginForm(props:{children:React.ReactNode}) {
+
+import type React from "react"
+
+interface FormProps {
+  children: React.ReactNode;
+  requestHandler: (data: any) => void;
+}
+
+export default function LoginForm(props: FormProps) {
+  const submitHandler = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData);
+
+    props.requestHandler(data);
+  };
+  
   return (
-    <form className="space-y-5">
+    <form className="space-y-5" onSubmit={submitHandler}>
       {props.children}
       <LoginFormFooter />
     </form>
   )
 }
+
 function LoginFormFooter() {
   return (
     <>
