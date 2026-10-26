@@ -1,11 +1,12 @@
 services:
-  server:
+  app:
     build:
       context: .
       target: development
+    container_name: react-19-ais-ui-dev
     environment:
       NODE_ENV: development
-      
+
     ports:
       - 5173:5173
     volumes:
