@@ -1,23 +1,54 @@
 "use client"
 import React, { useState } from 'react';
 
-import LoginForm from '@src/components/feature/LoginForm';
-import {  LoginFormInputNIM, 
-          LoginFormInputPassword } from '@src/components/feature/LoginFormInput';
+import LoginForm from '@src/components/features/LoginForm';
+import {  LoginFormInputUserAccount, 
+          LoginFormInputPassword } from '@src/components/features/LoginFormInput';
 import LoginLayout from '@src/components/layouts/LoginLayout';
+import { loginSchema } from '@src/schemas/authSchema';
+import type { LoginDTO } from '@src/schemas/authSchema';
+import z from 'zod';
+import axios from 'axios';
 
-interface RequestLoginAPI{
-  username?: string
-  email?: string
-  password: string
-}
 
 export default function LoginPage() {
-  const [nim, setNim] = useState("");
+  const [userAccount, setUserAccount] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const loginAPIHandler = (req: RequestLoginAPI) => {
-    console.log(req)
+  // State untuk error API (Backend / Global)
+  const [serverError, setServerError] = useState("");
+
+  const loginAPIHandler = async (req: LoginDTO) => {
+    const result = loginSchema.safeParse(req);
+
+    if (!result.success) {
+      console.error("Gagal Validasi:", z.treeifyError(result.error));
+      return; 
+    }
+
+    const { userAccount, password } = result.data;
+
+    try {
+      const response = await axios.post('http://localhost:3000/login', {
+        userAccount,
+        password
+      });
+
+      const responseData = response.data;
+      
+      localStorage.setItem('token', responseData.token);
+
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        setServerError(error.response.data.message || 'Login gagal');
+      } else {
+        setServerError('Tidak dapat terhubung ke server mock.');
+      }
+      console.error('API Error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -25,9 +56,9 @@ export default function LoginPage() {
       <LoginPageHeader /> 
       {/* ======================== */}
       <LoginForm requestHandler={loginAPIHandler}>
-        <LoginFormInputNIM 
-          value={nim} 
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNim(e.target.value)}
+        <LoginFormInputUserAccount
+          value={userAccount} 
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserAccount(e.target.value)}
           />
         <LoginFormInputPassword 
           value={password} 

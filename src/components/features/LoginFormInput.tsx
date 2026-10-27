@@ -7,11 +7,11 @@ interface InputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-function LoginFormInputNIM({ value, onChange }: InputProps) {
+function LoginFormInputUserAccount({ value, onChange }: InputProps) {
   return (
     <div className="space-y-2">
-      <label htmlFor="nim" className="block text-sm font-semibold text-[#4a5568]">
-        Nomor Induk Mahasiswa (NIM)
+      <label htmlFor="userAccount" className="block text-sm font-semibold text-[#4a5568]">
+        Akun Pengguna
       </label>
       
       <div className="relative flex items-center">
@@ -24,13 +24,13 @@ function LoginFormInputNIM({ value, onChange }: InputProps) {
         </svg>
         
         <input
-          id="nim"
-          name="nim"
+          id="userAccount"
+          name="userAccount"
           type="text"
           value={value}
           onChange={onChange}
           required
-          autoComplete="username"
+          autoComplete="userAccount"
           placeholder="Masukkan NIM Anda"
           className="w-full pl-11 pr-4 py-3 bg-white border border-[#e2e8f0] rounded-xl text-sm text-[#2d3748] placeholder-[#a0aec0] outline-none transition-all duration-200 focus:border-[#b81d43] focus:ring-4 focus:ring-[#b81d43]/10"
         />
@@ -71,4 +71,4 @@ function LoginFormInputPassword({ value, onChange }: InputProps) {
   );
 }
 
-export { LoginFormInputNIM, LoginFormInputPassword };
+export { LoginFormInputUserAccount, LoginFormInputPassword };
