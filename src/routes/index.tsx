@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
     loader: protectedLoader,
     path: "/",
     lazy: async () => {
-          const app = await import("@src/App");
+          const app = await import("src/App");
           return { Component: app.default };
         },
   },
@@ -27,7 +27,7 @@ export const router = createBrowserRouter([
       {
         path: "login",
         lazy: async () => {
-          const loginPage = await import("@src/pages/auth/LoginPage");
+          const loginPage = await import("src/pages/auth/LoginPage");
           return { Component: loginPage.default };
         },
       },
