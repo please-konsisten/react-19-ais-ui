@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 
 interface FormProps {
   submitHandler: (data: any) => void;
+  errorMessage: any;
 }
 
 export default function LoginForm(props: FormProps) {
@@ -14,13 +15,14 @@ export default function LoginForm(props: FormProps) {
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
-    
+
     props.submitHandler(data);
   };
 
   return (
     <form onSubmit={onSubmitHandler}>
       <div className="flex flex-col gap-6">
+        {/* User Account Input */}
         <div className="grid gap-2">
           <Label htmlFor="userAccount">User Account</Label>
           <Input
@@ -31,6 +33,7 @@ export default function LoginForm(props: FormProps) {
             required
           />
         </div>
+        {/* Password Input */}
         <div className="grid gap-2">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
