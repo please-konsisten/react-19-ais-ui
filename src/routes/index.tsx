@@ -1,14 +1,37 @@
-import App from "@src/App";
-import LoginPage from "@src/pages/auth/LoginPage";
-import { createBrowserRouter } from "react-router";
+import { Navigate } from "react-router"
+import { createBrowserRouter, redirect } from "react-router";
+const protectedLoader = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return redirect("/login");
+  return null;
+};
+
+const publicOnlyLoader = async () => {
+  const token = localStorage.getItem("token");
+  if (token) return redirect("/");
+  return null;
+};
 
 export const router = createBrowserRouter([
   {
+    loader: protectedLoader,
     path: "/",
-    element: <App />,
+    lazy: async () => {
+          const app = await import("@src/App");
+          return { Component: app.default };
+        },
   },
   {
-    path: "login",
-    element: <LoginPage />
-  }
+    loader: publicOnlyLoader,
+    children: [
+      {
+        path: "login",
+        lazy: async () => {
+          const loginPage = await import("@src/pages/auth/LoginPage");
+          return { Component: loginPage.default };
+        },
+      },
+    ],
+  },
 ]);
+
