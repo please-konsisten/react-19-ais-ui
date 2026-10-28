@@ -1,46 +1,56 @@
 "use client"
 
-import type React from "react"
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 interface FormProps {
-  children: React.ReactNode;
-  requestHandler: (data: any) => void;
+  submitHandler: (data: any) => void;
 }
 
 export default function LoginForm(props: FormProps) {
-  const submitHandler = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const onSubmitHandler = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
-
-    props.requestHandler(data);
+    
+    props.submitHandler(data);
   };
-  
-  return (
-    <form className="space-y-5" onSubmit={submitHandler}>
-      {props.children}
-      <LoginFormFooter />
-    </form>
-  )
-}
 
-function LoginFormFooter() {
   return (
-    <>
-      <div className="flex justify-end pt-1">
-        <a href="#forgot" className="text-xs font-medium text-[#b81d43] hover:underline hover:text-[#911231] transition-colors">
-          Lupa Kata Sandi?
-        </a>
+    <form onSubmit={onSubmitHandler}>
+      <div className="flex flex-col gap-6">
+        <div className="grid gap-2">
+          <Label htmlFor="userAccount">User Account</Label>
+          <Input
+            id="userAccount"
+            type="userAccount"
+            name="userAccount"
+            placeholder="m@example.com"
+            required
+          />
+        </div>
+        <div className="grid gap-2">
+          <div className="flex items-center">
+            <Label htmlFor="password">Password</Label>
+            <a
+              href="#"
+              className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+            >
+              Forgot your password?
+            </a>
+          </div>
+          <Input 
+            id="password" 
+            type="password" 
+            name="password" 
+            placeholder="********"
+            required 
+          />
+        </div>
       </div>
-
-      {/* Tombol Aksi */}
-      <button
-        type="submit"
-        className="w-full py-3.5 bg-[#b81d43] text-white border-none rounded-xl text-base font-semibold cursor-pointer transition-colors duration-200 hover:bg-[#911231] focus:outline-none focus:ring-4 focus:ring-[#b81d43]/20"
-      >
-        MASUK
-      </button>
-    </>
+      <Button type="submit" children="Login"/>
+    </form>
   )
 }

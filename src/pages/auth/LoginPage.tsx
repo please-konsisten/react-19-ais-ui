@@ -1,25 +1,21 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { loginUser } from '@src/services/authService'; // Import service TS tadi
+import { loginUser } from '@src/services/authService';
 
 import AuthLayout from '@src/components/layouts/AuthLayout';
-import {
-  LoginFormInputUserAccount,
-  LoginFormInputPassword
-} from '@src/components/features/LoginFormInput';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@src/components/ui/card';
 import { cn } from 'cn';
+import LoginForm from '@src/components/features/LoginForm';
 
 export default function LoginPage() {
   const navigate = useNavigate();
 
-  const [userAccount, setUserAccount] = useState('');
-  const [password, setPassword] = useState('');
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submitHandler = async (data:any) => {
+    const { userAccount, password } = data
+    
     setIsLoading(true);
     setServerError(null);
 
@@ -38,19 +34,19 @@ export default function LoginPage() {
 
   return (
     <AuthLayout>
-      <CardHeader className={cn('text-center mb-8')}>
+      <CardHeader className={cn('text-center')}>
         <CardTitle className={cn('text-2xl font-bold text-[#1a202c] mb-2')}>Selamat Datang Kembali!</CardTitle>
         <CardDescription className={cn('text-sm text-[#718096]')}>Silakan masuk ke akun Anda.</CardDescription>
       </CardHeader>
       
       <CardContent>
-        {serverError && (
-          <div className="mb-4 p-2 text-xs text-red-600 bg-red-50 rounded border border-red-200 text-center">
-            {serverError}
-          </div>
-        )}
+        {/* {serverError && (
+          // <div className="mb-4 p-2 text-xs text-red-600 bg-red-50 rounded border border-red-200 text-center">
+          //   {serverError}
+          // </div>
+        )} */}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* <form onSubmit={handleSubmit} className="space-y-4">
           <LoginFormInputUserAccount
             value={userAccount} 
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserAccount(e.target.value)}
@@ -68,13 +64,16 @@ export default function LoginPage() {
           >
             {isLoading ? 'Memuat...' : 'Masuk'}
           </button>
-        </form>
+        </form> */}
+        <LoginForm
+          submitHandler={submitHandler}
+        />
       </CardContent>
 
       <CardFooter>
-        <div className="text-center text-xs text-[#718096] w-full">
+        <p className="text-center text-xs text-[#718096] w-full">
           Belum punya akun? <a href="#admin" className="text-[#b81d43] font-semibold hover:underline">Hubungi Administrasi</a>
-        </div>
+        </p>
       </CardFooter>
     </AuthLayout>
   );
