@@ -9,9 +9,11 @@ import { loginSchema } from '@src/schemas/authSchema';
 import type { LoginDTO } from '@src/schemas/authSchema';
 import z from 'zod';
 import axios from 'axios';
+import { redirect, useNavigate } from 'react-router';
 
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   const [userAccount, setUserAccount] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +43,7 @@ export default function LoginPage() {
 
       localStorage.setItem('token', responseData.token);
 
-
+      navigate("/"); 
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         setServerError(error.response.data.message || 'Login gagal');

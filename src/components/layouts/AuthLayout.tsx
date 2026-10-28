@@ -13,16 +13,18 @@ const LAYOUT_STYLES = {
   card: cn(
     "w-full bg-white rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.05)]",
     "p-6 max-w-full",
-    "sm:p-10 sm:max-w-[440px]" 
+    "sm:p-10 sm:max-w-[440px]"
   )
 }
 
 export default function AuthLayout({ children, className }: AuthLayoutProps) {
   return (
-    <div className={LAYOUT_STYLES.screen}>
-      <div className={cn(LAYOUT_STYLES.card, className)}>
-        {children}
-      </div>
-    </div>
+    <>
+      <main className={LAYOUT_STYLES.screen}>
+        <div className={cn(LAYOUT_STYLES.card, className)}>
+          {children}
+        </div>
+      </main>
+    </>
   )
 }

@@ -8,14 +8,18 @@ const protectedLoader = async () => {
 
 const publicOnlyLoader = async () => {
   const token = localStorage.getItem("token");
-  if (token) return redirect("/dashboard");
+  if (token) return redirect("/");
   return null;
 };
 
 export const router = createBrowserRouter([
   {
+    loader: protectedLoader,
     path: "/",
-    element: <Navigate to="/login" replace />, 
+    lazy: async () => {
+          const app = await import("@src/App");
+          return { Component: app.default };
+        },
   },
   {
     loader: publicOnlyLoader,
@@ -29,17 +33,5 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  // {
-  //   loader: protectedLoader,
-  //   children: [
-  //     {
-  //       path: "dashboard",
-  //       lazy: async () => {
-  //         const { DashboardHome } = await import("./pages/dashboard/DashboardHome");
-  //         return { Component: DashboardHome };
-  //       },
-  //     },
-  //   ],
-  // },
 ]);
 
