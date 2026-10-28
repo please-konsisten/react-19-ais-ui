@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import LoginForm from '@src/components/features/LoginForm';
 import {  LoginFormInputUserAccount, 
           LoginFormInputPassword } from '@src/components/features/LoginFormInput';
-import LoginLayout from '@src/components/layouts/LoginLayout';
+import AuthLayout from '@src/components/layouts/AuthLayout';
 import { loginSchema } from '@src/schemas/authSchema';
 import type { LoginDTO } from '@src/schemas/authSchema';
 import z from 'zod';
@@ -30,14 +30,17 @@ export default function LoginPage() {
     const { userAccount, password } = result.data;
 
     try {
-      const response = await axios.post('http://localhost:3000/login', {
+      const response = await axios.post(`${import.meta.env.VITE_APP_API}/login`, {
         userAccount,
         password
       });
 
       const responseData = response.data;
-      
+      console.log('Login Sukses:', responseData);
+      alert(`Login Berhasil! Token Anda: ${responseData.token}`);
+
       localStorage.setItem('token', responseData.token);
+
 
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
@@ -52,7 +55,7 @@ export default function LoginPage() {
   };
 
   return (
-    <LoginLayout> 
+    <AuthLayout> 
       <LoginPageHeader /> 
       {/* ======================== */}
       <LoginForm requestHandler={loginAPIHandler}>
@@ -67,7 +70,7 @@ export default function LoginPage() {
       </LoginForm>
       {/* ======================== */}
       <LoginPageFooter />
-    </LoginLayout>
+    </AuthLayout>
   );
 }
 
