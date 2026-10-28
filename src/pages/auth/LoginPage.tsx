@@ -1,12 +1,12 @@
 "use client"
 import React, { useState } from 'react';
 
-import LoginForm from 'src/components/features/LoginForm';
+import LoginForm from '@src/components/features/LoginForm';
 import {  LoginFormInputUserAccount, 
-          LoginFormInputPassword } from 'src/components/features/LoginFormInput';
-import AuthLayout from 'src/components/layouts/AuthLayout';
-import { loginSchema } from 'src/schemas/authSchema';
-import type { LoginDTO } from 'src/schemas/authSchema';
+          LoginFormInputPassword } from '@src/components/features/LoginFormInput';
+import AuthLayout from '@src/components/layouts/AuthLayout';
+import { loginSchema } from '@src/schemas/authSchema';
+import type { LoginDTO } from '@src/schemas/authSchema';
 import z from 'zod';
 import axios from 'axios';
 import { redirect, useNavigate } from 'react-router';
