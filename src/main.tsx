@@ -3,11 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from "react-router/dom";
 import './index.css'
 import { router } from '@src/routes';
+import { ThemeProvider } from './components/theme-provider';
 
 
 createRoot(document.getElementById('root')!).render(
-    <StrictMode>
+  <StrictMode>
+    <ThemeProvider defaultTheme='light'>
       <RouterProvider router={router} />
-    </StrictMode>
+    </ThemeProvider>
+  </StrictMode>
   ,
 )

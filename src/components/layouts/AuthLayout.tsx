@@ -1,23 +1,19 @@
 "use client"
-import { ThemeProvider } from "@src/components/theme-provider"
+import { cn } from "cn"
 
 interface AuthLayoutProps {
   children: React.ReactNode
 }
 
-const LAYOUT_STYLES = {
-  screen: "min-h-screen bg-[#f4f6f9] flex items-center justify-center p-4 font-sans text-[#2d3748]",
-}
-
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <ThemeProvider>
-      <main className={LAYOUT_STYLES.screen}>
+    <>
+      <main className={cn("min-h-screen w-full bg-[#f7fafc] dark:bg-[#0f172a] flex flex-col items-center justify-center p-6 transition-colors duration-200")}>
         {children}
       </main>
       <footer>
 
       </footer>
-    </ThemeProvider>
+    </>
   )
 }

@@ -3,26 +3,27 @@ import { useNavigate } from 'react-router';
 import { cn } from 'cn';
 
 import AuthLayout from '@src/components/layouts/AuthLayout';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle } from '@src/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@src/components/ui/card';
 import LoginForm from '@src/components/features/LoginForm';
-  
+
 import { loginUser } from '@src/services/authService';
 
 export default function LoginPage() {
   const navigate = useNavigate();
 
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<any>(null);
+  const [_isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async (data:any) => {
+  const submitHandler = async (data: any) => {
     const { userAccount, password } = data
-    
+
     setIsLoading(true);
     setServerError(null);
 
@@ -35,53 +36,35 @@ export default function LoginPage() {
       localStorage.setItem('token', result.token);
       navigate("/");
     } else {
-      setServerError(result.message || 'Terjadi kesalahan.');
+      setServerError(result);
     }
   };
 
   return (
     <AuthLayout>
-      <Card>
+      <Card className={cn("w-full max-w-80 h-auto flex flex-col bg-white dark:bg-[#1e293b] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-slate-100 dark:border-slate-800 transition-all")} >
         <CardHeader className={cn('text-center')}>
-          <CardTitle className={cn('text-2xl font-bold text-[#1a202c] mb-2')}>Selamat Datang Kembali!</CardTitle>
-          <CardDescription className={cn('text-sm text-[#718096]')}>Silakan masuk ke akun Anda.</CardDescription>
+          <CardTitle className={cn('text-2xl font-bold text-[#1a202c] dark:text-slate-100 tracking-tight')}>
+            Selamat Datang Kembali!
+          </CardTitle>
+          <CardDescription className={cn('text-sm text-[#718096] dark:text-slate-400')}>
+            Silakan masuk ke akun Anda.
+          </CardDescription>
         </CardHeader>
-        
+
         <CardContent>
-          {/* {serverError && (
-            // <div className="mb-4 p-2 text-xs text-red-600 bg-red-50 rounded border border-red-200 text-center">
-            //   {serverError}
-            // </div>
-          )} */}
-
-          {/* <form onSubmit={handleSubmit} className="space-y-4">
-            <LoginFormInputUserAccount
-              value={userAccount} 
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserAccount(e.target.value)}
-            />
-            
-            <LoginFormInputPassword 
-              value={password} 
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} 
-            />
-
-            <button 
-              type="submit" 
-              disabled={isLoading}
-              className="w-full mt-4 bg-[#b81d43] hover:bg-[#961635] text-white text-sm font-semibold py-2 px-4 rounded transition-colors disabled:opacity-50"
-            >
-              {isLoading ? 'Memuat...' : 'Masuk'}
-            </button>
-          </form> */}
           <LoginForm
             submitHandler={submitHandler}
             errorMessage={serverError}
           />
         </CardContent>
 
-        <CardFooter>
-          <p className="text-center text-xs text-[#718096] w-full">
-            Belum punya akun? <a href="#admin" className="text-[#b81d43] font-semibold hover:underline">Hubungi Administrasi</a>
+        <CardFooter className="border-t border-slate-50 dark:border-slate-800/50">
+          <p className="text-center text-xs text-zinc-600 dark:text-zinc-400 w-full">
+            Punya masalah dengan akun?{' '}
+            <a href="#admin" className="text-[#b81d43] dark:text-[#f43f5e] font-semibold hover:underline transition-colors">
+              Hubungi Administrasi
+            </a>
           </p>
         </CardFooter>
       </Card>
