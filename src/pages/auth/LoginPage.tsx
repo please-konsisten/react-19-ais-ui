@@ -62,7 +62,7 @@ export default function LoginPage() {
         <CardFooter className="border-t border-slate-50 dark:border-slate-800/50">
           <p className="text-center text-xs text-zinc-600 dark:text-zinc-400 w-full">
             Punya masalah dengan akun?{' '}
-            <a href="#admin" className="text-[#b81d43] dark:text-[#f43f5e] font-semibold hover:underline transition-colors">
+            <a href="#" className="text-[#b81d43] dark:text-[#f43f5e] font-semibold hover:underline transition-colors">
               Hubungi Administrasi
             </a>
           </p>
