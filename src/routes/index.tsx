@@ -1,3 +1,4 @@
+import ErrorPage from "@src/pages/error/ErrorPage";
 import { createBrowserRouter, redirect } from "react-router";
 const protectedLoader = async () => {
   const token = localStorage.getItem("token");
@@ -14,6 +15,7 @@ const publicOnlyLoader = async () => {
 export const router = createBrowserRouter([
   {
     loader: protectedLoader,
+    ErrorBoundary: ErrorPage,
     path: "/",
     lazy: async () => {
           const app = await import("@src/App");
@@ -22,6 +24,7 @@ export const router = createBrowserRouter([
   },
   {
     loader: publicOnlyLoader,
+    ErrorBoundary: ErrorPage,
     children: [
       {
         path: "login",
