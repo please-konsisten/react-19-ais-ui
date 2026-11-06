@@ -1,98 +1,73 @@
-"use client"
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { cn } from 'cn';
 
-import LoginForm from 'src/components/features/LoginForm';
-import {  LoginFormInputUserAccount, 
-          LoginFormInputPassword } from 'src/components/features/LoginFormInput';
-import AuthLayout from 'src/components/layouts/AuthLayout';
-import { loginSchema } from 'src/schemas/authSchema';
-import type { LoginDTO } from 'src/schemas/authSchema';
-import z from 'zod';
-import axios from 'axios';
-import { redirect, useNavigate } from 'react-router';
+import AuthLayout from '@src/components/layouts/AuthLayout';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@src/components/ui/card';
+import LoginForm from '@src/components/features/LoginForm';
 
+import { loginUser } from '@src/services/authService';
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const [userAccount, setUserAccount] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // State untuk error API (Backend / Global)
-  const [serverError, setServerError] = useState("");
+  const [serverError, setServerError] = useState<any>(null);
+  const [_isLoading, setIsLoading] = useState(false);
 
-  const loginAPIHandler = async (req: LoginDTO) => {
-    const result = loginSchema.safeParse(req);
+  const submitHandler = async (data: any) => {
+    const { userAccount, password } = data
 
-    if (!result.success) {
-      console.error("Gagal Validasi:", z.treeifyError(result.error));
-      return; 
-    }
+    setIsLoading(true);
+    setServerError(null);
 
-    const { userAccount, password } = result.data;
+    const result = await loginUser({ userAccount, password });
 
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_APP_API}/login`, {
-        userAccount,
-        password
-      });
+    setIsLoading(false);
 
-      const responseData = response.data;
-      console.log('Login Sukses:', responseData);
-      alert(`Login Berhasil! Token Anda: ${responseData.token}`);
-
-      localStorage.setItem('token', responseData.token);
-
-      navigate("/"); 
-    } catch (error: any) {
-      if (axios.isAxiosError(error) && error.response) {
-        setServerError(error.response.data.message || 'Login gagal');
-      } else {
-        setServerError('Tidak dapat terhubung ke server mock.');
-      }
-      console.error('API Error:', error);
-    } finally {
-      setIsLoading(false);
+    if (result.success && result.token) {
+      alert('Login Berhasil!');
+      localStorage.setItem('token', result.token);
+      navigate("/");
+    } else {
+      setServerError(result);
     }
   };
 
   return (
-    <AuthLayout> 
-      <LoginPageHeader /> 
-      {/* ======================== */}
-      <LoginForm requestHandler={loginAPIHandler}>
-        <LoginFormInputUserAccount
-          value={userAccount} 
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserAccount(e.target.value)}
+    <AuthLayout>
+      <Card className={cn("w-full max-w-80 h-auto flex flex-col bg-white dark:bg-[#1e293b] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-slate-100 dark:border-slate-800 transition-all")} >
+        <CardHeader className={cn('text-center')}>
+          <CardTitle className={cn('text-2xl font-bold text-[#1a202c] dark:text-slate-100 tracking-tight')}>
+            Selamat Datang Kembali!
+          </CardTitle>
+          <CardDescription className={cn('text-sm text-[#718096] dark:text-slate-400')}>
+            Silakan masuk ke akun Anda.
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          <LoginForm
+            submitHandler={submitHandler}
+            errorMessage={serverError}
           />
-        <LoginFormInputPassword 
-          value={password} 
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} 
-          />
-      </LoginForm>
-      {/* ======================== */}
-      <LoginPageFooter />
+        </CardContent>
+
+        <CardFooter className="border-t border-slate-50 dark:border-slate-800/50">
+          <p className="text-center text-xs text-zinc-600 dark:text-zinc-400 w-full">
+            Punya masalah dengan akun?{' '}
+            <a href="#" className="text-[#b81d43] dark:text-[#f43f5e] font-semibold hover:underline transition-colors">
+              Hubungi Administrasi
+            </a>
+          </p>
+        </CardFooter>
+      </Card>
     </AuthLayout>
   );
-}
-
-function LoginPageHeader() {
-  return (
-    <div className="text-center mb-8">
-      <h1 className="text-2xl font-bold text-[#1a202c] mb-2">
-        Selamat Datang Kembali!
-      </h1>
-      <p className="text-sm text-[#718096]">
-        Silakan masuk ke akun Anda.
-      </p>
-    </div>
-  )
-}
-
-function LoginPageFooter() {
-  return (
-    <div className="text-center text-xs text-[#718096] mt-6">
-      Belum punya akun? <a href="#admin" className="text-[#b81d43] font-semibold hover:underline">Hubungi Administrasi</a>
-    </div>
-  )
 }

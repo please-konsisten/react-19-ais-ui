@@ -1,5 +1,13 @@
 {
   "files": [],
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["./src/*"],
+      "@public/*": ["./public/*"]
+    }
+  },
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
