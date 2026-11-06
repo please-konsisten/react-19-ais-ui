@@ -1,27 +1,51 @@
-import { createBrowserRouter, Navigate, redirect, Outlet } from "react-router"; // Sesuai rekomendasi browser
+import type { ReactNode } from 'react';
+import { createBrowserRouter, Navigate, Outlet } from 'react-router';
 
-const protectedLoader = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) return redirect("/login");
-  return null;
-};
+import { useAuth } from '@src/contexts/AuthContext';
 
-const publicOnlyLoader = async () => {
-  const token = localStorage.getItem("token");
-  if (token) return redirect("/dashboard");
-  return null;
-};
+function ProtectedRoute({ children }: { children?: ReactNode }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Memuat...</p>;
+  if (!user) return <Navigate to="/login" replace />;
+  return children ?? <Outlet />;
+}
+
+function GuestRoute({ children }: { children?: ReactNode }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Memuat...</p>;
+  if (user) return <Navigate to="/dashboard" replace />;
+  return children ?? <Outlet />;
+}
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    // loader: protectedLoader,
-    element: <Outlet />,
+    element: <GuestRoute />,
     children: [
       {
-        index: true, 
-        element: <Navigate to="/dashboard" replace />,
+        path: "login",
+        lazy: async () => {
+          const loginPage = await import("@src/pages/auth/LoginPage");
+          return { Component: loginPage.default };
+        },
       },
+      {
+        path: "register",
+        lazy: async () => {
+          const registerPage = await import("@src/pages/auth/RegisterPage");
+          return { Component: registerPage.default };
+        },
+      },
+      {
+        path: "",
+        element: <Navigate to="/login" replace />,
+      }
+    ],
+  },
+  {
+    element: <ProtectedRoute />,
+    children: [
       {
         path: "dashboard",
         lazy: async () => {
@@ -32,16 +56,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <Outlet />,
-    loader: publicOnlyLoader,
-    children: [
-      {
-        path: "login",
-        lazy: async () => {
-          const loginPage = await import("@src/pages/auth/LoginPage");
-          return { Component: loginPage.default };
-        },
-      },
-    ],
+    path: "*",
+    element: <Navigate to="/dashboard" replace />,
   },
 ]);
