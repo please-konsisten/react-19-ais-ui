@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { createBrowserRouter, Navigate, Outlet } from 'react-router';
 
 import { useAuth } from '@src/contexts/AuthContext';
+import AppLayout from '@src/components/layouts/AppLayout';
 
 function ProtectedRoute({ children }: { children?: ReactNode }) {
   const { user, loading } = useAuth();
@@ -47,11 +48,16 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: "dashboard",
-        lazy: async () => {
-          const dashboardPage = await import("@src/pages/app/DashboardPage");
-          return { Component: dashboardPage.default };
-        },
+        element: <AppLayout />,
+        children: [
+          {
+            path: "dashboard",
+            lazy: async () => {
+              const dashboardPage = await import("@src/pages/app/DashboardPage");
+              return { Component: dashboardPage.default };
+            },
+          },
+        ]
       },
     ],
   },

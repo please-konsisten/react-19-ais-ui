@@ -1,12 +1,18 @@
 import AppLayout from '@src/components/layouts/AppLayout';
+import { useAuth } from '@src/contexts/AuthContext';
 
 export default function DashboardPage() {
+  const { user, logout } = useAuth();
+
   return (
-    <AppLayout>
-      <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-        <span>Akademik ASP</span>
-        <span>/</span>
-      </div>
-    </AppLayout>
+      <main>
+        <h1>Dashboard</h1>
+        <p>Email: {user.email}</p>
+        <p>Role: {JSON.stringify(user)}</p>
+
+        <button type="button" onClick={() => logout()}>
+          Logout
+        </button>
+      </main>
   );
 }

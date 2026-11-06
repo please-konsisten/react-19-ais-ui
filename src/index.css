@@ -1,9 +1,9 @@
 @import "tailwindcss";
-@import "tw-animate-css";
+/* @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *)); */
 
 /* :root {
   --text: #6b6375;

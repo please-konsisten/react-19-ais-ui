@@ -1,20 +1,19 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { SidebarProvider } from "../ui/sidebar";
 import AppSidebar from "../features/AppSidebar";
+import { Outlet } from "react-router";
+import AppHeader from "../features/AppHeader";
+import "@src/index.css"
 
-interface AppLayoutProps extends React.PropsWithChildren {
-}
-
-export default function AppLayout({
-  children
-}: AppLayoutProps){
+export default function AppLayout(){
   const [open, setOpen] = useState(true)
   return(
     <SidebarProvider open={open} onOpenChange={setOpen}>
       <AppSidebar />
-      <main>
-        { children }
-      </main>
+      <div id="main-content">
+        <AppHeader />
+        <Outlet />
+      </div>
     </SidebarProvider>
   )
 }
