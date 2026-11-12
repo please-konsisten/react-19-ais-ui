@@ -1,5 +1,6 @@
+import ErrorPage from "@src/pages/error/ErrorPage";
 import type { ReactNode } from 'react';
-import { createBrowserRouter, Navigate, Outlet } from 'react-router';
+import { createBrowserRouter, Navigate, Outlet } from "react-router";
 
 import { useAuth } from '@src/contexts/AuthContext';
 import AppLayout from '@src/components/layouts/AppLayout';
@@ -23,6 +24,7 @@ function GuestRoute({ children }: { children?: ReactNode }) {
 export const router = createBrowserRouter([
   {
     element: <GuestRoute />,
+    ErrorBoundary: ErrorPage,
     children: [
       {
         path: "login",
@@ -46,6 +48,7 @@ export const router = createBrowserRouter([
   },
   {
     element: <ProtectedRoute />,
+    ErrorBoundary: ErrorPage,
     children: [
       {
         element: <AppLayout />,
