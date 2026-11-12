@@ -1,27 +1,28 @@
-import { createBrowserRouter, redirect } from "react-router";
-const protectedLoader = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) return redirect("/login");
-  return null;
-};
+import type { ReactNode } from 'react';
+import { createBrowserRouter, Navigate, Outlet } from 'react-router';
 
-const publicOnlyLoader = async () => {
-  const token = localStorage.getItem("token");
-  if (token) return redirect("/");
-  return null;
-};
+import { useAuth } from '@src/contexts/AuthContext';
+import AppLayout from '@src/components/layouts/AppLayout';
+
+function ProtectedRoute({ children }: { children?: ReactNode }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Memuat...</p>;
+  if (!user) return <Navigate to="/login" replace />;
+  return children ?? <Outlet />;
+}
+
+function GuestRoute({ children }: { children?: ReactNode }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Memuat...</p>;
+  if (user) return <Navigate to="/dashboard" replace />;
+  return children ?? <Outlet />;
+}
 
 export const router = createBrowserRouter([
   {
-    loader: protectedLoader,
-    path: "/",
-    lazy: async () => {
-          const app = await import("@src/App");
-          return { Component: app.default };
-        },
-  },
-  {
-    loader: publicOnlyLoader,
+    element: <GuestRoute />,
     children: [
       {
         path: "login",
@@ -30,7 +31,38 @@ export const router = createBrowserRouter([
           return { Component: loginPage.default };
         },
       },
+      {
+        path: "register",
+        lazy: async () => {
+          const registerPage = await import("@src/pages/auth/RegisterPage");
+          return { Component: registerPage.default };
+        },
+      },
+      {
+        path: "",
+        element: <Navigate to="/login" replace />,
+      }
     ],
   },
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          {
+            path: "dashboard",
+            lazy: async () => {
+              const dashboardPage = await import("@src/pages/app/DashboardPage");
+              return { Component: dashboardPage.default };
+            },
+          },
+        ]
+      },
+    ],
+  },
+  {
+    path: "*",
+    element: <Navigate to="/dashboard" replace />,
+  },
 ]);
-

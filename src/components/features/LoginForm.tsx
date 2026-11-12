@@ -4,7 +4,6 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { cn } from "cn";
-import { Link } from "react-router";
 
 interface FormProps {
   submitHandler: (data: any) => void;
