@@ -4,34 +4,41 @@ import { Link, useNavigate } from 'react-router';
 import { useAuth } from '@src/contexts/AuthContext';
 import { getErrorMessage } from '@src/api';
 
+interface RegisterActionState {
+  error: string | null;
+  username?: string;
+  email?: string;
+  // Tambahkan field lain jika state awal Anda menyimpannya (misal: success?: boolean)
+}
+
 export default function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const [state, formAction, isPending] = useActionState(
-    async (_prevState, formData) => {
-      const username = formData.get('username');
-      const email = formData.get('email');
-      const password = formData.get('password');
-      const confirmPassword = formData.get('confirmPassword');
+const [state, formAction, isPending] = useActionState<RegisterActionState, FormData>(
+  async (_prevState, formData) => {
+    const username = String(formData.get('username') ?? '');
+    const email = String(formData.get('email') ?? '');
+    const password = String(formData.get('password') ?? '');
+    const confirmPassword = String(formData.get('confirmPassword') ?? '');
 
-      // Field yang dipertahankan saat gagal (password sengaja tidak dikembalikan)
-      const keep = { username, email };
+    // Field yang dipertahankan saat gagal (password sengaja tidak dikembalikan)
+    const keep = { username, email };
 
-      if (password !== confirmPassword) {
-        return { error: 'Konfirmasi password tidak sama', ...keep };
-      }
+    if (password !== confirmPassword) {
+      return { error: 'Konfirmasi password tidak sama', ...keep };
+    }
 
-      try {
-        await register({ username, email, password });
-        navigate('/login', { replace: true, state: { registered: true } });
-        return { error: null, username: '', email: '' };
-      } catch (error) {
-        return { error: getErrorMessage(error), ...keep };
-      }
-    },
-    { error: null, username: '', email: '' }
-  );
+    try {
+      await register({ username, email, password });
+      navigate('/login', { replace: true, state: { registered: true } });
+      return { error: null, username: '', email: '' };
+    } catch (error) {
+      return { error: getErrorMessage(error), ...keep };
+    }
+  },
+  { error: null, username: '', email: '' }
+);
 
   return (
     <main>

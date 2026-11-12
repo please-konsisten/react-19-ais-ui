@@ -4,16 +4,9 @@ import {
 } from "@src/components/ui/sidebar";
 import { useLocation } from "react-router";
 import { AppSidebarContent, AppSidebarFooter, AppSidebarHeader } from "../parts/SidebarParts";
-import { AppWindow, Calendar, FileText, LayoutDashboard, Menu, UserCheck } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "../ui/button";
 
-const menuItems = [
-  { title: "Dashboard", icon: LayoutDashboard, to: "/dashboard" },
-  { title: "Nilai", icon: FileText, to: "/score" },
-  { title: "Presensi", icon: UserCheck, to: "/absence" },
-  { title: "Jadwal Mahasiswa", icon: Calendar, to: "/schedule" },
-  { title: "Registrasi", icon: AppWindow, to: "/registration" },
-];
 
 export default function AppSidebar() {
   const { state, openMobile, setOpenMobile, isMobile, toggleSidebar } = useSidebar();

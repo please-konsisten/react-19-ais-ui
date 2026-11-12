@@ -1,4 +1,3 @@
-import AppLayout from '@src/components/layouts/AppLayout';
 import { useAuth } from '@src/contexts/AuthContext';
 
 export default function DashboardPage() {
@@ -7,7 +6,7 @@ export default function DashboardPage() {
   return (
       <main>
         <h1>Dashboard</h1>
-        <p>Email: {user.email}</p>
+        <p>Email: {user?.email}</p>
         <p>Role: {JSON.stringify(user)}</p>
 
         <button type="button" onClick={() => logout()}>

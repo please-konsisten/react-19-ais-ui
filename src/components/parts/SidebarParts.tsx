@@ -1,12 +1,33 @@
 "use client"
 
-import { AppWindow, Calendar, ChevronDown, FileText, LayoutDashboard, Menu, UserCheck } from "lucide-react";
+import { 
+  AppWindow, 
+  Calendar, 
+  ChevronDown, 
+  FileText, 
+  LayoutDashboard, 
+  Menu, 
+  UserCheck, 
+  type LucideIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import { SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
-import { Link } from "react-router";
+import { 
+  SidebarContent, 
+  SidebarFooter, 
+  SidebarGroup, 
+  SidebarGroupContent, 
+  SidebarHeader, 
+  SidebarMenu, 
+  SidebarMenuButton, 
+  SidebarMenuItem } from "../ui/sidebar";
+import { Link, type Location } from "react-router";
 
 
-export function AppSidebarHeader(props: unknown) {
+interface SidebarHeaderFooterProps {
+  state: "expanded" | "collapsed";
+  toggleSidebar: () => void;
+}
+
+export function AppSidebarHeader(props: SidebarHeaderFooterProps) {
   return (
     <SidebarHeader className="flex flex-col gap-4 p-4">
       <div className="flex items-center justify-between font-bold text-xl tracking-tight text-gray-800">
@@ -48,7 +69,13 @@ export function AppSidebarHeader(props: unknown) {
   )
 }
 
-const menuItems = [
+interface MenuItemType {
+  title: string;
+  icon: LucideIcon;
+  to: string;
+}
+
+const menuItems: MenuItemType[] = [
   { title: "Dashboard", icon: LayoutDashboard, to: "/dashboard" },
   { title: "Nilai", icon: FileText, to: "/score" },
   { title: "Presensi", icon: UserCheck, to: "/absence" },
@@ -56,7 +83,13 @@ const menuItems = [
   { title: "Registrasi", icon: AppWindow, to: "/registration" },
 ];
 
-export function AppSidebarContent(props: unknown) {
+interface AppSidebarContentProps {
+  location: Location;
+  state: "expanded" | "collapsed";
+  handleMenuClick: () => void;
+}
+
+export function AppSidebarContent(props: AppSidebarContentProps) {
   return (
     <SidebarContent>
       <SidebarGroup>
@@ -86,7 +119,7 @@ export function AppSidebarContent(props: unknown) {
   )
 }
 
-export function AppSidebarFooter(props: unknown) {
+export function AppSidebarFooter(props: SidebarHeaderFooterProps) {
   return (
     <SidebarFooter className="p-4 border-t border-gray-100">
       {props.state === "collapsed" && (

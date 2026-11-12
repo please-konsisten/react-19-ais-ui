@@ -78,6 +78,13 @@ import { Link, useLocation } from 'react-router';
 import { useAuth } from '@src/contexts/AuthContext';
 import { getErrorMessage } from '@src/api';
 
+interface LoginActionState {
+  error: string | null;
+  identifier: string;
+}
+
+
+
 export default function LoginPage() {
   const { login } = useAuth();
   const location = useLocation();
@@ -85,21 +92,21 @@ export default function LoginPage() {
   // React 19: useActionState mengelola hasil, error, dan status pending form.
   // Setelah action selesai, React mereset field form, jadi identifier
   // dikembalikan lewat state agar tidak hilang saat login gagal.
-  const [state, formAction, isPending] = useActionState(
-    async (_prevState, formData) => {
-      const identifier = formData.get('identifier');
-      const password = formData.get('password');
+const [state, formAction, isPending] = useActionState<LoginActionState, FormData>(
+  async (_prevState, formData) => {
+    const identifier = String(formData.get('identifier') ?? '');
+    const password = String(formData.get('password') ?? '');
 
-      try {
-        await login({ identifier, password });
-        // Sukses: GuestRoute melihat user sudah ada dan mengarahkan ke /dashboard
-        return { error: null, identifier: '' };
-      } catch (error) {
-        return { error: getErrorMessage(error), identifier };
-      }
-    },
-    { error: null, identifier: '' }
-  );
+    try {
+      await login({ identifier, password });
+      // Sukses: GuestRoute melihat user sudah ada dan mengarahkan ke /dashboard
+      return { error: null, identifier: '' };
+    } catch (error) {
+      return { error: getErrorMessage(error), identifier };
+    }
+  },
+  { error: null, identifier: '' }
+);
 
   return (
     <main>

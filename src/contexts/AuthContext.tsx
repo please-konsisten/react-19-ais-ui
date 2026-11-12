@@ -1,4 +1,4 @@
-import { createContext, use, useCallback, useEffect, useMemo, useState, type Context } from 'react';
+import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react';
 
 import api, {
   clearAccessToken,
@@ -7,11 +7,36 @@ import api, {
   setAuthFailureHandler,
 } from '../api';
 
-const AuthContext: Context<any|null> = createContext(null);
+interface User {
+  id: string;
+  email: string;
+  role: string;
+}
+
+interface LoginCredentials {
+  identifier: string;
+  password: string;
+}
+
+interface RegisterPayload {
+  username: string;
+  email: string;
+  password: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  register: (payload: RegisterPayload) => Promise<unknown>;
+  logout: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 // Hanya untuk MENAMPILKAN data user di UI (id, email, role dari payload access token).
 // Ini bukan verifikasi: keputusan keamanan tetap dilakukan backend.
-const decodeToken = (token) => {
+const decodeToken = (token: string): User | null => {
   try {
     const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
     return JSON.parse(atob(payload));
@@ -20,18 +45,16 @@ const decodeToken = (token) => {
   }
 };
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const applyToken = useCallback((token) => {
+  const applyToken = useCallback((token: string) => {
     setAccessToken(token);
     const payload = decodeToken(token);
     setUser(payload ? { id: payload.id, email: payload.email, role: payload.role } : null);
   }, []);
 
-  // Saat aplikasi pertama dimuat, access token (di memori) kosong.
-  // Minta yang baru lewat refresh token di cookie. Kalau gagal, user belum login.
   useEffect(() => {
     setAuthFailureHandler(() => setUser(null));
 
@@ -42,14 +65,14 @@ export function AuthProvider({ children }) {
   }, [applyToken]);
 
   const login = useCallback(
-    async ({ identifier, password }) => {
+    async ({ identifier, password }: LoginCredentials) => {
       const res = await api.post('/auth/login', { identifier, password });
       applyToken(res.data.data.accessToken);
     },
     [applyToken]
   );
 
-  const register = useCallback(async ({ username, email, password }) => {
+  const register = useCallback(async ({ username, email, password }: RegisterPayload) => {
     const res = await api.post('/auth/register', { username, email, password });
     return res.data.data;
   }, []);
@@ -68,7 +91,6 @@ export function AuthProvider({ children }) {
     [user, loading, login, register, logout]
   );
 
-  // React 19: Context langsung dipakai sebagai provider, tanpa .Provider
   return <AuthContext value={value}>{children}</AuthContext>;
 }
 
