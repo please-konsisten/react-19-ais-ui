@@ -1,21 +1,22 @@
 ARG NODE_VERSION=26
 ARG NGINX_VERSION=stable-alpine
 
-# =============================== #
-# base: dipakai untuk build lokal (compose) dan stage build production
-FROM node:${NODE_VERSION}-slim AS base
-
+FROM node:${NODE_VERSION}-slim AS deps
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci --legacy-peer-deps
-RUN chown -R node:node .
-USER node
+COPY package.json ./
+RUN npm i --legacy-peer-deps
 
-# =============================== #
-FROM base AS build
+FROM deps AS builder
+ARG BUILD_MODE=development
+ARG VITE_APP_API
+ENV VITE_APP_API=${VITE_APP_API} \
+NODE_OPTIONS=--max-old-space-size=1024
+COPY . .
+RUN npm run build -- --mode ${BUILD_MODE}
 
-ARG VITE_API_URL
-ENV VITE_API_URL=${VITE_API_URL}
-
-COPY --chown=node:node . .
-RUN npm run build
+FROM nginx:${NGINX_VERSION} AS serve
+COPY docker/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD wget -qO- http://127.0.0.1/ >/dev/null || exit 1
