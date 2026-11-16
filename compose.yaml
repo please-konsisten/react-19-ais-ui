@@ -4,11 +4,11 @@ services:
       context: .
       target: serve
       args:
-        BUILD_MODE: development
-        VITE_APP_API: ${VITE_APP_API}
+        - BUILD_MODE=development
+        - VITE_APP_API=${VITE_APP_API}
+        - VITE_ADMIN_EMAIL=${VITE_ADMIN_EMAIL}
+        - VITE_ADMIN_WHATSAPP=${VITE_ADMIN_WHATSAPP}
     image: ais-ui:latest
-    env_file:
-      - .env
     container_name: ais-ui-web
     ports:
       - "8080:80"

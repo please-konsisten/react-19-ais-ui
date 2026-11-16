@@ -9,8 +9,12 @@ RUN npm i --legacy-peer-deps
 FROM deps AS builder
 ARG BUILD_MODE=development
 ARG VITE_APP_API
+ARG VITE_ADMIN_EMAIL
+ARG VITE_ADMIN_WHATSAPP
 ENV VITE_APP_API=${VITE_APP_API} \
-NODE_OPTIONS=--max-old-space-size=1024
+    VITE_ADMIN_EMAIL=${VITE_ADMIN_EMAIL} \
+    VITE_ADMIN_WHATSAPP=${VITE_ADMIN_WHATSAPP} \
+    NODE_OPTIONS=--max-old-space-size=1024
 COPY . .
 RUN npm run build -- --mode ${BUILD_MODE}
 
