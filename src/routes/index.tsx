@@ -46,6 +46,13 @@ export const router = createBrowserRouter([
             },
           },
           {
+            path: "account-help",
+            lazy: async () => {
+              const accountHelpPage = await import("@src/pages/auth/AccountHelpPage");
+              return { Component: accountHelpPage.default };
+            },
+          },
+          {
             path: "",
             element: <Navigate to="/login" replace />,
           }
