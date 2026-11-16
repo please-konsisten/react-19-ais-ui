@@ -4,6 +4,7 @@ import { createBrowserRouter, Navigate, Outlet } from "react-router";
 
 import { useAuth } from '@src/contexts/AuthContext';
 import AppLayout from '@src/components/layouts/AppLayout';
+import AuthLayout from "@src/components/layouts/AuthLayout";
 
 function ProtectedRoute({ children }: { children?: ReactNode }) {
   const { user, loading } = useAuth();
@@ -27,23 +28,36 @@ export const router = createBrowserRouter([
     ErrorBoundary: ErrorPage,
     children: [
       {
-        path: "login",
-        lazy: async () => {
-          const loginPage = await import("@src/pages/auth/LoginPage");
-          return { Component: loginPage.default };
-        },
+        element: <AuthLayout />,
+        children: [
+
+          {
+            path: "login",
+            lazy: async () => {
+              const loginPage = await import("@src/pages/auth/LoginPage");
+              return { Component: loginPage.default };
+            },
+          },
+          {
+            path: "register",
+            lazy: async () => {
+              const registerPage = await import("@src/pages/auth/RegisterPage");
+              return { Component: registerPage.default };
+            },
+          },
+          {
+            path: "account-help",
+            lazy: async () => {
+              const accountHelpPage = await import("@src/pages/auth/AccountHelpPage");
+              return { Component: accountHelpPage.default };
+            },
+          },
+          {
+            path: "",
+            element: <Navigate to="/login" replace />,
+          }
+        ]
       },
-      {
-        path: "register",
-        lazy: async () => {
-          const registerPage = await import("@src/pages/auth/RegisterPage");
-          return { Component: registerPage.default };
-        },
-      },
-      {
-        path: "",
-        element: <Navigate to="/login" replace />,
-      }
     ],
   },
   {
